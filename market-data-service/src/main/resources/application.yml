@@ -1,0 +1,15 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: "market-data-service"
+  datasource:
+    url: jdbc:mysql://localhost:3306/tickerdatabase
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
