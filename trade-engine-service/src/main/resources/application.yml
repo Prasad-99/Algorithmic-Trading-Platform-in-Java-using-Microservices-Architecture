@@ -1,0 +1,14 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: "trade-engine-service"
+  datasource:
+    url: jdbc:mysql://localhost:3307/signaldatabase
+    username: myuser
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
