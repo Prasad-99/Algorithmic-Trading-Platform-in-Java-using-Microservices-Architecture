@@ -4,6 +4,22 @@ server:
 spring:
   application:
     name: "trade-engine-service"
+  cloud:
+    function:
+      definition: generateSignal
+    stream:
+      bindings:
+        generateSignal-out-0:
+          destination: signal-sent
+        acknowledgement-in-0:
+          destination: ack-receive
+          group: ${spring.application.name}
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
   datasource:
     url: jdbc:mysql://localhost:3307/signaldatabase
     username: myuser

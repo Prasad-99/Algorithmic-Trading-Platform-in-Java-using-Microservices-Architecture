@@ -8,9 +8,9 @@ import com.prasad.tradeengineservice.repository.SignalDataRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.List;
 public class SignalGenerator {
     private FetchMarketData fetchMarketData;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    
+    private final StreamBridge streamBridge;
     private SignalDataRepository signalDataRepository;
 
     @Scheduled(fixedRate = 5000)
@@ -34,6 +34,8 @@ public class SignalGenerator {
         signalData.setPrice(prices.get(prices.size()-1));
         signalData.setSymbol("BTCUSDT");
         signalDataRepository.save(signalData);
+        var result = streamBridge.send("signal-sent", signal);
+        log.debug("Signal sent to OMS? {}",result);
         return null;
     }
 
