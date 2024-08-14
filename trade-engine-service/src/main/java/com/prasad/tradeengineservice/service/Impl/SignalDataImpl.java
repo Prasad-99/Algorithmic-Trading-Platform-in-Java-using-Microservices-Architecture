@@ -17,7 +17,7 @@ public class SignalDataImpl implements ISignalData {
 
     @Override
     public void addSignalData(SignalData signal) {
-//        signalDataRepository.save(signal);
-        log.info("Updating signal data for signal ");
+        signalDataRepository.save(signal);
+        log.info("Signal data added to the database");
     }
 }

@@ -16,8 +16,9 @@ public class SignalData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long signalId;
+    private String signalId;
     private String symbol;
+    private Double price;
     private String signalName;
     private String isPlaced;
 }
