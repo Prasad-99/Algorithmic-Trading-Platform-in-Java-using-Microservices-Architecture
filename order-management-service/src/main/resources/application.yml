@@ -1,0 +1,22 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: "order-management-service"
+  cloud:
+    function:
+      definition: processSignal
+    stream:
+      bindings:
+        processSignal-in-0:
+          destination: signal-sent
+          group: ${spring.application.name}
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+

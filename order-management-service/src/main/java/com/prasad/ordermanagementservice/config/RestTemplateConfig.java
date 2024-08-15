@@ -1,4 +1,4 @@
-package com.prasad.tradeengineservice.config;
+package com.prasad.ordermanagementservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
