@@ -11,9 +11,6 @@ spring:
       bindings:
         generateSignal-out-0:
           destination: signal-sent
-        acknowledgement-in-0:
-          destination: ack-receive
-          group: ${spring.application.name}
   rabbitmq:
     host: localhost
     port: 5672

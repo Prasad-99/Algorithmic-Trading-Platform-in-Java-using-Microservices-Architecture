@@ -3,6 +3,7 @@ package com.prasad.tradeengineservice.signalGenerator;
 import com.prasad.tradeengineservice.constants.SignalConstants;
 import com.prasad.tradeengineservice.controller.FetchMarketData;
 import com.prasad.tradeengineservice.dto.MarketDataDto;
+import com.prasad.tradeengineservice.dto.SignalDto;
 import com.prasad.tradeengineservice.entity.SignalData;
 import com.prasad.tradeengineservice.repository.SignalDataRepository;
 import lombok.AllArgsConstructor;
@@ -25,18 +26,21 @@ public class SignalGenerator {
 
     @Scheduled(fixedRate = 5000)
     public String generateSignal(){
-        SignalData signalData = new SignalData();
         List<Double> prices = fetchData();
         String signal = evaluateSignal(prices);
         String signalId = generateSignalId(prices.get(prices.size()-1), signal);
-        signalData.setSignalId(signalId);
-        signalData.setSignalName(signal);
-        signalData.setPrice(prices.get(prices.size()-1));
-        signalData.setSymbol("BTCUSDT");
-        signalDataRepository.save(signalData);
-        var result = streamBridge.send("signal-sent", signal);
+        populateSignalData(prices, "BTCUSDT", signalId, signal);
+        var result = sendSignalToQueue(signal, signalId, prices.get(prices.size()-1));
         log.debug("Signal sent to OMS? {}",result);
         return null;
+    }
+
+    private boolean sendSignalToQueue(String signal, String signalId, Double price) {
+        SignalDto signalDto = new SignalDto();
+        signalDto.setSignal(signal);
+        signalDto.setSignalId(signalId);
+        signalDto.setPrice(price);
+        return streamBridge.send("signal-sent", signalDto);
     }
 
     private String evaluateSignal(List<Double> prices) {
@@ -67,5 +71,14 @@ public class SignalGenerator {
 
     private String generateSignalId(Double price, String signal){
         return LocalDateTime.now() +" "+ signal +" "+ price.toString();
+    }
+
+    private void populateSignalData(List<Double> prices, String symbol, String signalId, String signal) {
+        SignalData signalData = new SignalData();
+        signalData.setSignalId(signalId);
+        signalData.setSignalName(signal);
+        signalData.setPrice(prices.get(prices.size()-1));
+        signalData.setSymbol(symbol);
+        signalDataRepository.save(signalData);
     }
 }
