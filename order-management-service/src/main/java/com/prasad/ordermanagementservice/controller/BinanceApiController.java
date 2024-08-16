@@ -1,5 +1,6 @@
 package com.prasad.ordermanagementservice.controller;
 
+import com.prasad.ordermanagementservice.entity.OrderSummary;
 import com.prasad.ordermanagementservice.service.BinanceApiService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
-import java.util.Objects;
 
 @RestController
 @AllArgsConstructor
@@ -19,18 +19,17 @@ public class BinanceApiController {
     private final Logger log = LoggerFactory.getLogger(BinanceApiController.class);
 
     @GetMapping("/placeOrder")
-    public boolean placeOrder(
+    public OrderSummary placeOrder(
             @RequestParam String symbol,
             @RequestParam String side,
             @RequestParam String type,
             @RequestParam String quantity,
             @RequestParam String price) {
         try {
-            log.info("Order Placed Successfully {}", binanceApiService.placeOrder(symbol, side, type, quantity, price));
-            return true;
+            return binanceApiService.placeOrder(symbol, side, type, quantity, price);
         } catch (Exception e) {
             log.info("Error: {}", e.getMessage());
-            return false;
+            return null;
         }
     }
 

@@ -1,5 +1,7 @@
 package com.prasad.ordermanagementservice.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.prasad.ordermanagementservice.entity.OrderSummary;
 import lombok.AllArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,7 +29,7 @@ public class BinanceApiService {
     private final String baseUrl = "https://testnet.binancefuture.com";
     private final Logger log = LoggerFactory.getLogger(BinanceApiService.class);
 
-    public String placeOrder(String symbol, String side, String type, String quantity, String price) throws Exception {
+    public OrderSummary placeOrder(String symbol, String side, String type, String quantity, String price) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
 
         String endpoint = "/fapi/v1/order";
@@ -54,8 +56,11 @@ public class BinanceApiService {
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(url + "?" + queryString, HttpMethod.POST, entity, String.class);
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        OrderSummary order = objectMapper.convertValue(params, OrderSummary.class);
+
         log.info("Order placed successfully : {}", response.getBody());
-        return response.getBody();
+        return order;
     }
 
     public Map<String, String> getOpenOrders(String symbol) throws Exception {
