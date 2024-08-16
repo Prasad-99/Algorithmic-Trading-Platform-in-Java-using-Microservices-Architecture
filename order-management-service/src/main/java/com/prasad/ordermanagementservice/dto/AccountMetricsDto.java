@@ -1,28 +1,19 @@
-package com.prasad.riskmanagementservice.entity;
+package com.prasad.ordermanagementservice.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountMetrics {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Getter
+@Setter
+public class AccountMetricsDto {
     private Long id;
     private double balance;
     private double unrealizedProfitLoss;
     private double positionSize;
     private String symbol;
     private LocalDateTime timestamp;
-
 }

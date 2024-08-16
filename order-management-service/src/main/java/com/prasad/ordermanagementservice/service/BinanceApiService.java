@@ -121,6 +121,31 @@ public class BinanceApiService {
         response.getBody();
     }
 
+    public void placeMarketOrder(String symbol, String side, String type, String quantity) throws Exception {
+        RestTemplate restTemplate = new RestTemplate();
+        String endpoint = "/fapi/v1/marketOrder";
+        String url = baseUrl + endpoint;
+        Map<String, String> params = new TreeMap<>();
+        params.put("symbol", symbol);
+        params.put("side", side);
+        params.put("type", type);
+        params.put("quantity", quantity);
+        params.put("timestamp", String.valueOf(System.currentTimeMillis()));
+        String queryString = getQueryString(params);
+        String signature = getHmacSHA256Signature(queryString, secretKey);
+
+        queryString += "&signature=" + signature;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-MBX-APIKEY", apiKey);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(url + "?" + queryString, HttpMethod.POST, entity, String.class);
+
+        log.info("Liquidate order placed successfully : {}", response.getBody());
+
+    }
+
 
     private String getQueryString(Map<String, String> params) {
         StringBuilder queryString = new StringBuilder();
