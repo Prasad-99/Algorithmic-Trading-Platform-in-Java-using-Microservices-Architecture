@@ -24,15 +24,14 @@ public class SignalGenerator {
     private final StreamBridge streamBridge;
     private SignalDataRepository signalDataRepository;
 
-    @Scheduled(fixedRate = 5000)
-    public String generateSignal(){
+    @Scheduled(fixedRate = 59999)
+    public void generateSignal(){
         List<Double> prices = fetchData();
         String signal = evaluateSignal(prices);
         String signalId = generateSignalId(prices.get(prices.size()-1), signal);
         populateSignalData(prices, "BTCUSDT", signalId, signal);
         var result = sendSignalToQueue(signal, signalId, prices.get(prices.size()-1));
         log.debug("Signal sent to OMS? {}",result);
-        return null;
     }
 
     private boolean sendSignalToQueue(String signal, String signalId, Double price) {
